@@ -21,10 +21,20 @@ func (p person) speak() {
 	fmt.Println("My height is", p.height)
 }
 func (sa secretAgent) speak() {
+	fmt.Println("---------------")
+	fmt.Println("I'm saying something")
 	fmt.Println("My name is", sa.name)
 	fmt.Println("My age is", sa.age)
 	fmt.Println("My height is", sa.height)
 	fmt.Printf("Do I have a license to kill?: %v\n", sa.licenseToKill)
+}
+
+type human interface {
+	speak()
+}
+
+func saySomething(h human) {
+	h.speak()
 }
 
 func main() {
@@ -35,7 +45,7 @@ func main() {
 		"John":   43,
 		"Martin": 423,
 	}
-	p := person{"martin", 18, 18}
+	p := person{"Thony", 18, 18}
 	fmt.Printf("%T\n", x)
 	fmt.Printf("%T\n", xi)
 	fmt.Printf("%T\n", m)
@@ -47,7 +57,7 @@ func main() {
 
 	sa := secretAgent{
 		person{
-			"Tim",
+			"Thony",
 			29,
 			180,
 		},
@@ -55,4 +65,6 @@ func main() {
 	}
 	fmt.Println(sa)
 	sa.speak()
+	saySomething(sa)
+	saySomething(p)
 }
