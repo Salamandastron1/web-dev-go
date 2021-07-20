@@ -1,11 +1,17 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"io"
+	"log"
+	"os"
+	"strings"
+)
 
 func main() {
-	name := "Tim Garrity"
+	name := "Meow"
 
-	tpl := `
+	str := fmt.Sprintf(`
 	<!DOCTYPE html>
 	<html>
 	<head>
@@ -16,6 +22,13 @@ func main() {
 	</body>
 	</head>
 	</html>
-	`
-	fmt.Println(tpl)
+	`)
+
+	nf, err := os.Create("index.html")
+	if err != nil {
+		log.Fatal("Error creating file", err)
+	}
+	defer nf.Close()
+
+	io.Copy(nf, strings.NewReader(str))
 }
