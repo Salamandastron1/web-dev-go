@@ -9,7 +9,9 @@ import (
 )
 
 func main() {
-	name := "Meow"
+	name := os.Args[1]
+	fmt.Println(os.Args[0])
+	fmt.Println(os.Args[1])
 
 	str := fmt.Sprintf(`
 	<!DOCTYPE html>
