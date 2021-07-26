@@ -7,12 +7,12 @@ import (
 )
 
 func main() {
-	tpl, err := template.ParseFiles("tpl.html")
+	tpl, err := template.ParseFiles([]string{"tpl.html"}...)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 	err = tpl.Execute(os.Stdout, nil)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 }
