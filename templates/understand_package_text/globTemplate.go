@@ -6,12 +6,14 @@ import (
 	"text/template"
 )
 
+var tpl *template.Template
+
+func init() {
+	tpl = template.Must(template.ParseGlob("*.gmao"))
+}
+
 func main() {
-	tpl, err := template.ParseGlob("*.gmao")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	err = tpl.Execute(os.Stdout, nil)
+	err := tpl.Execute(os.Stdout, nil)
 	if err != nil {
 		log.Fatalln(err)
 	}
