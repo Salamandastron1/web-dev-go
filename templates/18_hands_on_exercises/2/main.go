@@ -15,10 +15,10 @@ var tpl *template.Template
 type hotel struct {
 	Name   string
 	Region string
-	address
+	Address
 }
 
-type address struct {
+type Address struct {
 	Street string
 	City   string
 	Zip    int
@@ -32,7 +32,7 @@ func main() {
 	sb := hotel{
 		"Hilton",
 		"Southern",
-		address{
+		Address{
 			"123 Melrose St",
 			"Van Nuys",
 			81111,
@@ -41,7 +41,7 @@ func main() {
 	sf := hotel{
 		"Marriot",
 		"Northern",
-		address{
+		Address{
 			"123 Moop St",
 			"San Fran",
 			000111,
@@ -50,7 +50,7 @@ func main() {
 	sd := hotel{
 		"Westin",
 		"Southern",
-		address{
+		Address{
 			"123 Poop St",
 			"San Diego",
 			123445,

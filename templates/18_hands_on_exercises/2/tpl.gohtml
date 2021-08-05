@@ -7,7 +7,15 @@
 <body>
 
 {{range .}}
-    
+    <h1>{{.Name}}</h1>
+    <section>
+        <h2>Region - {{.Region}}</h2>
+        <p>Address:
+            Street - {{.Address.Street}}
+            City - {{.Address.City}}
+            Zip - {{.Address.Zip}}
+        </p>
+    </section>
 {{end}}
 
 </body>
