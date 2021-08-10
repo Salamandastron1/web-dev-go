@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/csv"
 	"log"
+	"net/http"
 	"os"
 	"strconv"
 	"text/template"
@@ -21,6 +22,11 @@ func init() {
 }
 
 func main() {
+	http.HandleFunc("/", generateTemplate)
+	http.ListenAndServe(":8080", nil)
+}
+
+func generateTemplate(res http.ResponseWriter, req *http.Request) {
 	f, err := os.Open("table.csv")
 	if err != nil {
 		log.Fatalln(err)
@@ -37,7 +43,7 @@ func main() {
 			continue
 		}
 
-		date, _ := time.Parse("Mon Jan 2 15:04:05 MST 2006", row[0])
+		date, _ := time.Parse("2006-01-02", row[0])
 		open, _ := strconv.ParseFloat(row[1], 64)
 
 		records = append(records, Record{
@@ -45,7 +51,7 @@ func main() {
 			Open: open,
 		})
 	}
-	err = tpl.Execute(os.Stdout, records)
+	err = tpl.Execute(res, records)
 	if err != nil {
 		log.Fatalln(err)
 	}
