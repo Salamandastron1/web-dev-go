@@ -18,6 +18,5 @@ func main() {
 	if err != nil {
 		log.Println(err)
 	}
-
 	fmt.Println(string(bs))
 }
