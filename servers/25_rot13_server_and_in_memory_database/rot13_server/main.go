@@ -41,7 +41,7 @@ func rot13(bs []byte) []byte {
 	var r13 = make([]byte, len(bs))
 	for i, v := range bs {
 		//ascii 97 - 122
-		if v < 109 {
+		if v <= 109 {
 			r13[i] = v + 13
 		} else {
 			r13[i] = v - 13
