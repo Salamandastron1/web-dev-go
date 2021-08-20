@@ -62,7 +62,7 @@ func (rl *requestLine) request(c net.Conn) {
 }
 
 func (rl *requestLine) response(c net.Conn) {
-	body := fmt.Sprintf(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title></title></head><body><strong>Dis the URL: %v &nbsp</strong></body></html>`, rl.uri)
+	body := fmt.Sprintf(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title></title></head><body><strong>Dis the URL: %v &nbsp</strong><h2>Dis the Method: %s</h2></body></html>`, rl.uri, rl.method)
 
 	fmt.Fprint(c, "HTTP/1.1 200 ok\r\n")
 	fmt.Fprintf(c, "Content-Length: %d\r\n", len(body))
