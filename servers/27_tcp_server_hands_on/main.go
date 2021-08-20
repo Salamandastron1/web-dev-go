@@ -14,6 +14,8 @@ type requestLine struct {
 	httpVersion string
 }
 
+type responseCode int
+
 func main() {
 	li, err := net.Listen("tcp", "localhost:8080")
 	if err != nil {
@@ -62,11 +64,23 @@ func (rl *requestLine) request(c net.Conn) {
 }
 
 func (rl *requestLine) response(c net.Conn) {
-	body := fmt.Sprintf(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title></title></head><body><strong>Dis the URL: %v &nbsp</strong><h2>Dis the Method: %s</h2></body></html>`, rl.uri, rl.method)
-
-	fmt.Fprint(c, "HTTP/1.1 200 ok\r\n")
-	fmt.Fprintf(c, "Content-Length: %d\r\n", len(body))
-	fmt.Fprint(c, "Content-Type: text/html\r\n")
-	fmt.Fprint(c, "\r\n")
-	fmt.Fprint(c, body)
+	body := fmt.Sprintf(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title></title></head><body><strong>Dis the URL: %v &nbsp</strong><p>Dis the Method: %s</p></body></html>`, rl.uri, rl.method)
+	var rc responseCode
+	switch rl.method {
+	case "GET":
+		rc = 200
+	case "PATCH":
+		rc = 206
+	case "POST":
+		rc = 201
+	case "DELETE":
+		rc = 204
+	}
+	fmt.Fprintf(c, "HTTP/1.1 %v ok\r\n", rc)
+	if rl.method == "GET" {
+		fmt.Fprintf(c, "Content-Length: %d\r\n", len(body))
+		fmt.Fprint(c, "Content-Type: text/html\r\n")
+		fmt.Fprint(c, "\r\n")
+		fmt.Fprint(c, body)
+	}
 }
