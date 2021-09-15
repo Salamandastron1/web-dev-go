@@ -8,13 +8,18 @@ import (
 	"strings"
 )
 
+var responseCodes map[string]int = map[string]int{
+	"GET":    200,
+	"DELETE": 204,
+	"PATCH":  206,
+	"POST":   201,
+}
+
 type requestLine struct {
 	method      string
 	uri         string
 	httpVersion string
 }
-
-type responseCode int
 
 func main() {
 	li, err := net.Listen("tcp", "localhost:8080")
@@ -65,16 +70,10 @@ func (rl *requestLine) request(c net.Conn) {
 
 func (rl *requestLine) response(c net.Conn) {
 	body := fmt.Sprintf(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title></title></head><body><strong>Dis the URL: %v &nbsp</strong><p>Dis the Method: %s</p></body></html>`, rl.uri, rl.method)
-	var rc responseCode
-	switch rl.method {
-	case "GET":
-		rc = 200
-	case "PATCH":
-		rc = 206
-	case "POST":
-		rc = 201
-	case "DELETE":
-		rc = 204
+	rc, ok := responseCodes[rl.method];
+	if !ok {
+		fmt.Fprintf(c, "Incorrect HTTP Method %s", rl.method)
+		return
 	}
 	fmt.Fprintf(c, "HTTP/1.1 %v ok\r\n", rc)
 	if rl.method == "GET" {
