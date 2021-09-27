@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -20,13 +19,14 @@ func (h hotdog) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	data := struct {
 		Method      string
 		URL         *url.URL
-		Submissions url.Values
+		Submissions map[string][]string
+		Header      http.Header
 	}{
 		req.Method,
 		req.URL,
 		req.Form,
+		req.Header,
 	}
-	fmt.Println(data)
 	tpl.ExecuteTemplate(w, "index.gohtml", data)
 }
 
