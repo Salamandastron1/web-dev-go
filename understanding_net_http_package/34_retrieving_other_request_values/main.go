@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -11,8 +12,8 @@ type hotdog int
 
 var tpl *template.Template
 
-func (h hotdog) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
+func (h hotdog) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	err := req.ParseForm()
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -20,9 +21,10 @@ func (h hotdog) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Method      string
 		Submissions url.Values
 	}{
-		r.Method,
-		r.Form,
+		req.Method,
+		req.Form,
 	}
+	fmt.Println(data)
 	tpl.ExecuteTemplate(w, "index.gohtml", data)
 }
 
