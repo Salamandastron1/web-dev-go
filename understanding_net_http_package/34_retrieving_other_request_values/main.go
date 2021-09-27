@@ -19,9 +19,11 @@ func (h hotdog) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 	data := struct {
 		Method      string
+		URL         *url.URL
 		Submissions url.Values
 	}{
 		req.Method,
+		req.URL,
 		req.Form,
 	}
 	fmt.Println(data)
