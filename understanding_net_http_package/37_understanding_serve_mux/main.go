@@ -13,19 +13,23 @@ const (
 
 type hotdog int
 
-func (h hotdog) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	w.Header().Set(contentType, contentHTML)
+func (d hotdog) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	io.WriteString(w, "moo moo")
+}
 
-	switch req.URL.Path {
-	case "/cow":
-		io.WriteString(w, "moo moo")
-	case "/cat":
-		io.WriteString(w, "meow meow")
-	}
+type hotcat int
+
+func (c hotcat) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	io.WriteString(w, "meow meow")
 }
 
 func main() {
-	var h hotdog
+	var d hotdog
+	var c hotcat
 
-	http.ListenAndServe(":8080", h)
+	mux := http.NewServeMux()
+	mux.Handle("/cow/", d)
+	mux.Handle("/cat/", c)
+
+	http.ListenAndServe(":8080", mux)
 }
