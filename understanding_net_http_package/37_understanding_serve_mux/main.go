@@ -27,9 +27,8 @@ func main() {
 	var d hotdog
 	var c hotcat
 
-	mux := http.NewServeMux()
-	mux.Handle("/cow/", d)
-	mux.Handle("/cat/", c)
+	http.Handle("/cow/", d)
+	http.Handle("/cat/", c)
 
-	http.ListenAndServe(":8080", mux)
+	http.ListenAndServe(":8080", nil)
 }
