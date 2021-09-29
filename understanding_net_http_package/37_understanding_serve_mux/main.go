@@ -11,24 +11,17 @@ const (
 	contentPlain = "text/plain; charset=UTF-8"
 )
 
-type hotdog int
-
-func (d hotdog) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+func d(w http.ResponseWriter, req *http.Request) {
 	io.WriteString(w, "moo moo")
 }
 
-type hotcat int
-
-func (c hotcat) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+func c(w http.ResponseWriter, req *http.Request) {
 	io.WriteString(w, "meow meow")
 }
 
 func main() {
-	var d hotdog
-	var c hotcat
-
-	http.Handle("/cow/", d)
-	http.Handle("/cat/", c)
+	http.HandleFunc("/cow/", d)
+	http.HandleFunc("/cat/", c)
 
 	http.ListenAndServe(":8080", nil)
 }
