@@ -1,16 +1,22 @@
 package main
 
 import (
-	"io"
 	"log"
 	"net/http"
+	"text/template"
 )
 
-const (
-	contentType  = "Content-Type"
-	contentHTML  = "text/html; charset=UTF-8"
-	contentPlain = "text/plain; charset=UTF-8"
-)
+var tpl *template.Template
+
+func init() {
+	tpl = template.Must(template.ParseGlob("templates/*"))
+}
+
+type person struct {
+	FirstName  string
+	LastName   string
+	Subscribed bool
+}
 
 func main() {
 	http.HandleFunc("/", foo)
@@ -20,21 +26,12 @@ func main() {
 }
 
 func foo(w http.ResponseWriter, r *http.Request) {
-	q := r.FormValue("q")
-	v := r.FormValue("v")
-	w.Header().Set(contentType, contentHTML)
+	f := r.FormValue("first")
+	l := r.FormValue("last")
+	s := r.FormValue("subscribe") == "on"
 
-	io.WriteString(w, `
-	<form method="post">
-		<input type="text" name="q" />
-		<input type="submit" />
-	</form>
-	<br/>`+q)
-
-	io.WriteString(w, `
-	<form method="get">
-		<input type="text" name="v" />
-		<input type="submit" />
-	</form>
-	<br/>`+v)
+	err := tpl.ExecuteTemplate(w, "index.gohtml", person{f, l, s})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
