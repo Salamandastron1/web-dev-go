@@ -28,8 +28,7 @@ func foo(w http.ResponseWriter, r *http.Request) {
 
 func bar(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("Your request method at bar: %s\n\n", r.Method)
-	w.Header().Set("Location", "/")
-	w.WriteHeader(http.StatusSeeOther)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func barred(w http.ResponseWriter, r *http.Request) {
