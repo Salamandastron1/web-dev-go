@@ -46,12 +46,11 @@ func abundance(w http.ResponseWriter, r *http.Request) {
 
 func count(w http.ResponseWriter, r *http.Request) {
 	c, err := r.Cookie("count")
-	if err != nil {
+	if err == http.ErrNoCookie {
 		log.Println(err, "...Creating")
-		http.SetCookie(w, &http.Cookie{
-			Name: "count", Value: "1",
-		})
-		return
+		c = &http.Cookie{
+			Name: "count", Value: "0",
+		}
 	}
 	i, err := strconv.Atoi(c.Value)
 	if err != nil {
@@ -60,8 +59,7 @@ func count(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	i++
-	http.SetCookie(w, &http.Cookie{
-		Name: "count", Value: fmt.Sprint(i),
-	})
-	fmt.Fprintf(w, "This is how many times you have visited: %s\n", fmt.Sprint(i))
+	c.Value = strconv.Itoa(i)
+	http.SetCookie(w, c)
+	fmt.Fprintf(w, "This is how many times you have visited: %s\n", c.Value)
 }
