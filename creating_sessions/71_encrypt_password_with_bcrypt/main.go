@@ -6,11 +6,12 @@ import (
 	"net/http"
 
 	uuid "github.com/satori/go.uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type user struct {
 	UserName string
-	Password string
+	Password []byte
 	First    string
 	Last     string
 }
@@ -57,8 +58,10 @@ func signup(w http.ResponseWriter, r *http.Request) {
 		un := r.FormValue("username")
 		f := r.FormValue("firstname")
 		l := r.FormValue("lastname")
-		p := r.FormValue("password")
-
+		p, err := bcrypt.GenerateFromPassword([]byte(r.FormValue("password")), bcrypt.MinCost)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusUnprocessableEntity)
+		}
 		// username taken??
 		if _, ok := dbUsers[un]; ok {
 			http.Error(w, "Username already taken", http.StatusForbidden)
