@@ -18,12 +18,16 @@ func getUser(w http.ResponseWriter, r *http.Request) user {
 			Value: sID.String(),
 		}
 	}
+	// reset session time
+	c.MaxAge = sessionLength
 	http.SetCookie(w, c)
 
 	// if the user exists, get user
 	var u user
-	if un, ok := dbSessions[c.Value]; ok {
-		u = dbUsers[un]
+	if s, ok := dbSessions[c.Value]; ok {
+		s.lastActivity = time.Now()
+		dbSessions[c.Value] = s
+		u = dbUsers[s.username]
 	}
 	return u
 }
@@ -33,8 +37,8 @@ func alreadyLoggedIn(r *http.Request) bool {
 	if err != nil {
 		return false
 	}
-	un := dbSessions[c.Value]
-	_, ok := dbUsers[un]
+	session := dbSessions[c.Value]
+	_, ok := dbUsers[session.username]
 
 	return ok
 }
@@ -43,7 +47,7 @@ func cleanSessions() {
 	fmt.Println("BEFORE CLEAN")
 	showSessions() // for demonstration purposes
 	for k, v := range dbSessions {
-		if time.Now().Sub(v.lastActivity) > time.Second*30 || v.username == "" {
+		if time.Since(v.lastActivity) > time.Second*30 || v.username == "" {
 			delete(dbSessions, k)
 		}
 	}

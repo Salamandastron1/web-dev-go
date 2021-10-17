@@ -164,7 +164,7 @@ func logout(w http.ResponseWriter, r *http.Request) {
 		MaxAge: -1,
 	}
 	http.SetCookie(w, c)
-	if time.Now().Sub(dbSessionsCleaned) > time.Second*30 {
+	if time.Since(dbSessionsCleaned) > time.Second*30 {
 		go cleanSessions()
 	}
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
