@@ -130,5 +130,5 @@ func login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tpl.ExecuteTemplate(w, "signup.gohtml", nil)
+	tpl.ExecuteTemplate(w, "login.gohtml", nil)
 }
