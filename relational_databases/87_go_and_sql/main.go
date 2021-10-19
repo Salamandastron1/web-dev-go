@@ -14,7 +14,7 @@ var err error
 
 func main() {
 	// user:password@tcp(localhost:5555)/dbname?charset=utf8
-	db, err = sql.Open("mysql", ")/test?charset=utf8")
+	db, err = sql.Open("mysql", dbConnectString)
 	check(err)
 	defer db.Close()
 
