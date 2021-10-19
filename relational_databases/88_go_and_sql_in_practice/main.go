@@ -26,20 +26,8 @@ func main() {
 	err = db.Ping()
 	if err != nil {
 		fmt.Println("DB not ready, retrying...")
-		go func() {
-			count := time.Duration(1 * time.Millisecond)
-			for {
-				err := db.Ping()
-				if err == nil {
-					log.Println("DB connection established")
-					return
-				} else {
-					log.Println(err)
-					time.Sleep(count)
-					count = time.Duration(math.Pow(float64(count+1), float64(count)))
-				}
-			}
-		}()
+		// exponential retry db connection
+		go retryDB(err)
 	}
 	http.HandleFunc("/", index)
 	http.HandleFunc("/amigos", amigos)
@@ -199,4 +187,19 @@ func drop(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintln(w, "DROPPED TABLE customer")
+}
+
+func retryDB(err error) {
+	count := time.Duration(1 * time.Millisecond)
+	for {
+		err := db.Ping()
+		if err == nil {
+			log.Println("DB connection established")
+			return
+		} else {
+			log.Println(err)
+			time.Sleep(count)
+			count = time.Duration(math.Pow(float64(count+1), float64(count)))
+		}
+	}
 }
