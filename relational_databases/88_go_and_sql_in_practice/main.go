@@ -25,7 +25,6 @@ func main() {
 
 	err = db.Ping()
 	if err != nil {
-		fmt.Println("DB not ready, retrying...")
 		// exponential retry db connection
 		go retryDB(err)
 	}
@@ -192,6 +191,7 @@ func drop(w http.ResponseWriter, r *http.Request) {
 func retryDB(err error) {
 	count := time.Duration(1 * time.Millisecond)
 	for {
+		log.Println("DB not ready, retrying...")
 		err := db.Ping()
 		if err == nil {
 			log.Println("DB connection established")
