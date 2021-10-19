@@ -198,6 +198,7 @@ func retryDB(err error) {
 			return
 		} else {
 			log.Println(err)
+			log.Println("Exponential backoff begun. Sleeping:", count)
 			time.Sleep(count)
 			count = time.Duration(math.Pow(float64(count+1), float64(count)))
 		}
