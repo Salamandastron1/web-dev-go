@@ -26,16 +26,23 @@ func main() {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	var c *http.Cookie
-
+	var xs []string
 	checkSession(w, r)
 	if r.Method == http.MethodPost {
-		c = addImage(w, r)
+		xs = addImage(w, r)
+	} else {
+		c, err := r.Cookie("photos")
+		if err != http.ErrNoCookie {
+			xs = strings.Split(c.Value, "|")
+		}
 	}
-	tpl.ExecuteTemplate(w, "index.gohtml", c)
+	if len(xs) > 0 {
+		xs = xs[:len(xs)-1]
+	}
+	tpl.ExecuteTemplate(w, "index.gohtml", xs)
 }
 
-func addImage(w http.ResponseWriter, r *http.Request) *http.Cookie {
+func addImage(w http.ResponseWriter, r *http.Request) []string {
 	c, err := r.Cookie("photos")
 	if err == http.ErrNoCookie {
 		c = &http.Cookie{
@@ -50,7 +57,7 @@ func addImage(w http.ResponseWriter, r *http.Request) *http.Cookie {
 	}
 	http.SetCookie(w, c)
 
-	return c
+	return strings.Split(c.Value, "|")
 }
 
 // createFile creates and copies over the contents of a file
