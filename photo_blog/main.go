@@ -51,7 +51,6 @@ func addImage(w http.ResponseWriter, r *http.Request) []string {
 	}
 	fname := createFile(w, r)
 
-	fmt.Println(fname)
 	if !strings.Contains(c.Value, fname) {
 		c.Value += fmt.Sprintf("%s|", fname)
 	}
@@ -92,7 +91,6 @@ func createFile(w http.ResponseWriter, r *http.Request) string {
 }
 
 func checkSession(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Check Session")
 	_, err := r.Cookie("session")
 	if err == http.ErrNoCookie {
 		http.SetCookie(w, &http.Cookie{
