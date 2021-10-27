@@ -5,12 +5,12 @@
     <title>INDEX</title>
 </head>
 <body>
-    <h1>Hello from index</h1>
-    <ol>
-        {{range .}}
-            <li>{{.}}</li>
-        {{end}}
-    </ol>
+    <h1>Your pictures</h1>
+    {{range .}}
+    <section>
+        <img src="/public/pics/{{.}}" width="400px"/>
+    </section>
+    {{end}}
     <form enctype="multipart/form-data" method="post">
         <input type="file" name="nf"/>
         <input type="submit"/>
