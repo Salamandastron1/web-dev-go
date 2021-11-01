@@ -25,7 +25,7 @@ func main() {
 	rcvd := `{"Width":800,"Height":600,"Title":"View from 15th Floor","Thumbnail":{"Url":"http://www.example.com/image/481989943","Height":125,"Width":100},"Animated":false,"IDs":[116,943,234,38793]}`
 	err := json.Unmarshal([]byte(rcvd), &data)
 	if err != nil {
-		log.Println("Error Unmarshalling", err)
+		log.Fatalln("Error Unmarshalling", err)
 	}
 	fmt.Println(data)
 
