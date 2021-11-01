@@ -28,4 +28,9 @@ func main() {
 		log.Println("Error Unmarshalling", err)
 	}
 	fmt.Println(data)
+
+	for i, v := range data.IDs {
+		fmt.Println(i, v)
+	}
+	fmt.Println(data.Thumbnail.Height)
 }
