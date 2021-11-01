@@ -17,6 +17,11 @@ type city struct {
 	Screech string  `json:"Country"`
 }
 
+type model struct {
+	State    bool
+	Pictures []string
+}
+
 type cities []city
 
 func main() {
@@ -30,4 +35,13 @@ func main() {
 	fmt.Println(data)
 
 	fmt.Println(data[1].Bark)
+
+	m := model{}
+	fmt.Println("Before marshal, these are the zero values\n", m)
+	bs, err := json.Marshal(m)
+	if err != nil {
+		fmt.Println("error marshalling:", err)
+	}
+
+	fmt.Println("After JSON marshal these are the zero values:\n", string(bs))
 }
