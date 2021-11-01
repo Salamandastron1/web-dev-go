@@ -42,7 +42,7 @@ func mshl(w http.ResponseWriter, r *http.Request) {
 	p1 := person{
 		"James",
 		"Bond",
-		[]string{"Suit", "Gun", "Wry sense of humor"},
+		[]string{"Suit", "Gun", "Wry sense of humor", "Marshal"},
 	}
 	json, err := json.Marshal(p1)
 	if err != nil {
@@ -56,7 +56,7 @@ func encd(w http.ResponseWriter, r *http.Request) {
 	p1 := person{
 		"James",
 		"Bond",
-		[]string{"Suit", "Gun", "Wry sense of humor"},
+		[]string{"Suit", "Gun", "Wry sense of humor", "Encode"},
 	}
 	err := json.NewEncoder(w).Encode(p1)
 	if err != nil {
