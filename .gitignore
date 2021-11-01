@@ -1,3 +1,4 @@
 *.jp*
 const.go
 **/public/**
+*.pem
