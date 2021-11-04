@@ -22,6 +22,10 @@ type model struct {
 	Pictures []string
 }
 
+type unexported struct {
+	moo string
+}
+
 type cities []city
 
 func main() {
@@ -44,4 +48,13 @@ func main() {
 	}
 
 	fmt.Println("After JSON marshal these are the zero values:\n", string(bs))
+
+	moo := unexported{"meow"}
+	bs, err = json.Marshal(moo)
+	if err != nil {
+		fmt.Println("error marshalling:", err)
+	}
+
+	fmt.Println("Unexported fields are not marshaled:\n", string(bs))
+
 }
