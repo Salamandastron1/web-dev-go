@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	u := models.User{Name: "james bond", Gender: "male", Age: 32, ID: "007"}
+	u := models.User{Name: "james bond", Gender: "male", Age: 32, ID: "777"}
 	uj, err := json.Marshal(u)
 	if err != nil {
 		log.Fatal("Marshaling error:", err.Error())

@@ -12,7 +12,7 @@ import (
 
 type UserController struct{}
 
-func New() *UserController {
+func NewUserController() *UserController {
 	return &UserController{}
 }
 
