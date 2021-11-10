@@ -17,7 +17,7 @@ func main() {
 		log.Fatal("Marshaling error:", err.Error())
 	}
 	b := bytes.NewReader(uj)
-	r, _ := http.NewRequest("DELETE", "http://localhost:8080/user/61886241923f817dafc7ebe1", b)
+	r, _ := http.NewRequest("DELETE", "http://localhost:8080/user/83e0e5e9-28c2-435a-9008-df36d74451f6", b)
 	if err != nil {
 		log.Fatal("Bad inputs:", err.Error())
 	}
