@@ -10,20 +10,19 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-var users map[uuid.UUID]*models.User = make(map[uuid.UUID]*models.User)
-
 type UserController struct {
+	session map[uuid.UUID]models.User
 }
 
-func NewUserController() *UserController {
-	return &UserController{}
+func NewUserController(s map[uuid.UUID]models.User) *UserController {
+	return &UserController{s}
 }
 
 func (uc UserController) GetUser(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	// Grab id
 	id := uuid.MustParse(p.ByName("id"))
 	// check user and fetch user if available
-	u, ok := users[id]
+	u, ok := uc.session[id]
 	if !ok {
 		http.Error(w, "User not found", http.StatusNotFound)
 		return
@@ -42,8 +41,8 @@ func (uc UserController) CreateUser(w http.ResponseWriter, r *http.Request, _ ht
 	// store the user in map
 	// handle case for unique ID colliding
 	for {
-		if _, ok := users[u.ID]; !ok {
-			users[u.ID] = &u
+		if _, ok := uc.session[u.ID]; !ok {
+			uc.session[u.ID] = u
 			break
 		} else {
 			u.ID = uuid.New()
@@ -61,13 +60,13 @@ func (uc UserController) DeleteUser(w http.ResponseWriter, r *http.Request, p ht
 	// Grab id
 	id := uuid.MustParse(p.ByName("id"))
 	// check user and fetch user if available
-	_, ok := users[id]
+	_, ok := uc.session[id]
 	if !ok {
 		http.Error(w, "User not found", http.StatusNotFound)
 		return
 		// delete user
 	} else {
-		delete(users, id)
+		delete(uc.session, id)
 	}
 	w.WriteHeader(http.StatusOK) // 200
 	fmt.Fprint(w, "Deleted user: ", id, "\n")
