@@ -38,6 +38,7 @@ func (uc UserController) GetUser(w http.ResponseWriter, r *http.Request, p httpr
 
 func (uc UserController) CreateUser(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	u := models.User{ID: uuid.New()}
+	json.NewDecoder(r.Body).Decode(&u)
 	// store the user in map
 	// handle case for unique ID colliding
 	for {
