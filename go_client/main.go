@@ -10,9 +10,9 @@ import (
 
 func main() {
 	// watch out for those zero val
-	uj := `{"name": "james", "gender": "she/her", "age": 18}`
+	uj := `{"name": "rachel", "gender": "she/her", "age": 29}`
 	b := bytes.NewReader([]byte(uj))
-	r, err := http.NewRequest("POST", "http://localhost:8080/user", b)
+	r, err := http.NewRequest("GET", "http://localhost:8080/user/de0faca2-ef44-448c-991a-d73745e2c946", b)
 	if err != nil {
 		log.Fatal("Bad inputs:", err.Error())
 	}
