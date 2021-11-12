@@ -2,22 +2,17 @@ package main
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"web-dev-go/go_and_mongodb/organizing_code_into_packages/models"
 )
 
 func main() {
-	u := models.User{Name: "james bond", Gender: "male", Age: 32}
-	uj, err := json.Marshal(u)
-	if err != nil {
-		log.Fatal("Marshaling error:", err.Error())
-	}
-	b := bytes.NewReader(uj)
-	r, _ := http.NewRequest("DELETE", "http://localhost:8080/user/83e0e5e9-28c2-435a-9008-df36d74451f6", b)
+	// watch out for those zero val
+	uj := `{"name": "james", "gender": "she/her", "age": 18}`
+	b := bytes.NewReader([]byte(uj))
+	r, err := http.NewRequest("POST", "http://localhost:8080/user", b)
 	if err != nil {
 		log.Fatal("Bad inputs:", err.Error())
 	}
