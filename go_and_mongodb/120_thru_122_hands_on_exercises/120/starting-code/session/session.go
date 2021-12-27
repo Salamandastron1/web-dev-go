@@ -12,27 +12,34 @@ import (
 )
 
 type Session struct {
-	inMem     map[uuid.UUID]*models.User
+	inMem     inMem
 	fileStore *os.File
 }
 
+type inMem map[uuid.UUID]*models.User
+
+// New provides a new session which comes with an in-memory store
+// and file system storage
 func New() *Session {
-	var users map[uuid.UUID]*models.User = make(map[uuid.UUID]*models.User)
-	um, err := os.Open("userMap.json")
+	var users inMem = make(inMem)
+	um, err := newFileStore(users)
 	if err != nil {
-		log.Println(err.Error())
-		log.Println("Proceeding with run, using in-memory non-nil map")
-		um, err = os.Create("userMap.json")
-		if err != nil {
-			log.Fatal("Unable to create backup file: ", err.Error())
-		}
-		log.Println("'userMap.json' created")
-	} else {
-		json.NewDecoder(um).Decode(&users)
+		panic(err)
 	}
-	defer um.Close()
 
 	return &Session{users, um}
+}
+
+func newFileStore(users inMem) (*os.File, error) {
+	um, err := os.Create("userMap.json")
+	if err != nil {
+		return nil, err
+	}
+	log.Println("'userMap.json' created")
+
+	json.NewDecoder(um).Decode(&users)
+
+	return um, um.Close()
 }
 
 func (s *Session) CreateUser(u *models.User) error {
