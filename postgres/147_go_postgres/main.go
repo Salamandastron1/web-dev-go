@@ -35,16 +35,19 @@ func init() {
 
 func main() {
 	http.HandleFunc("/books", booksIndex)
+	http.HandleFunc("/books/show", booksShow)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func booksIndex(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
+		log.Println("method not allowed, request denied")
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 	rows, err := db.Query("SELECT * FROM books;")
 	if err != nil {
+		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -55,6 +58,7 @@ func booksIndex(w http.ResponseWriter, r *http.Request) {
 		bk := Book{}
 		err := rows.Scan(&bk.isbn, &bk.title, &bk.author, &bk.price)
 		if err != nil {
+			log.Println(err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -62,6 +66,7 @@ func booksIndex(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err = rows.Err(); err != nil {
+		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -69,4 +74,34 @@ func booksIndex(w http.ResponseWriter, r *http.Request) {
 	for _, bk := range bks {
 		fmt.Fprintf(w, "%s, %s, $%.2f\n", bk.isbn, bk.title, bk.price)
 	}
+}
+
+func booksShow(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		log.Println("method not allowed, request denied")
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	isbn := r.FormValue("isbn")
+	if isbn == "" {
+		http.Error(w, http.StatusText(400), http.StatusBadRequest)
+		return
+	}
+
+	row := db.QueryRow("SELECT * FROM books WHERE isbn = $1", isbn)
+
+	bk := Book{}
+	err := row.Scan(&bk.isbn, &bk.title, &bk.author, &bk.price)
+	switch {
+	case err == sql.ErrNoRows:
+		log.Println("Resource not found")
+		http.NotFound(w, r)
+		return
+	case err != nil:
+		log.Println(err)
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Fprintf(w, "%s, %s, $%.2f\n", bk.isbn, bk.title, bk.price)
 }
