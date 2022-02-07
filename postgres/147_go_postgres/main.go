@@ -44,6 +44,7 @@ func main() {
 	http.HandleFunc("/books/create/process", booksCreateProcess)
 	http.HandleFunc("/books/update", booksUpdateForm)
 	http.HandleFunc("/books/update/process", booksUpdateProcess)
+	http.HandleFunc("/books/delete/process", booksDeleteProcess)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
@@ -214,4 +215,26 @@ func booksUpdateProcess(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(err)
 	}
+}
+
+func booksDeleteProcess(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		log.Println("method not allowed, request denied")
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	isbn := r.FormValue("isbn")
+	if isbn == "" {
+		http.Error(w, http.StatusText(400)+" missing ISBN for book", http.StatusBadRequest)
+		return
+	}
+	// delete book
+	_, err := db.Exec("DELETE FROM books WHERE isbn=$1")
+	if err != nil {
+		log.Println(err)
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/books", http.StatusSeeOther)
 }
